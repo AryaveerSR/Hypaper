@@ -29,13 +29,13 @@ class _HomeScreen extends State<HomeScreen> {
 
   _addNote() async {
     final newNote = Note(
-        title: "Hi",
-        content: "Hello World",
+        title: "Untitled Note",
+        content:
+            "This is an untitled note. You can edit it by clicking on the pencil icon.",
         dateCreated: DateTime.now(),
         dateEdited: DateTime.now());
 
     await _notesRepository.addNote(newNote);
-    print("e");
     _loadNotes();
   }
 
@@ -44,15 +44,12 @@ class _HomeScreen extends State<HomeScreen> {
     _loadNotes();
   }
 
-  _editNote(Note note) async {
-    await _notesRepository.updateNote(note);
-    _loadNotes();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: const MyAppBar(
+        title: "Hypaper",
+      ),
       drawer: const Drawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNote,
@@ -67,11 +64,10 @@ class _HomeScreen extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: _notes
                   .map((note) => NoteCard(
-                        displayNote: note,
-                        onDelete: () {
-                          _deleteNote(note);
-                        },
-                      ))
+                      displayNote: note,
+                      onDelete: () => _deleteNote(note),
+                      onTap: () => Navigator.of(context)
+                          .pushNamed('/notes', arguments: note)))
                   .toList(),
             ),
           )),

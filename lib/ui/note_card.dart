@@ -10,31 +10,29 @@ class NoteCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        elevation: 0,
-        color: Theme.of(context).colorScheme.surface,
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                children: [
-                  Text(displayNote.title),
-                  Text(displayNote.dateCreated.toString()),
-                  Text(displayNote.content),
-                ],
-              ),
-              IconButton(
-                  onPressed: onDelete,
-                  color: Theme.of(context).errorColor,
-                  icon: const Icon(Icons.delete))
-            ],
+    return Card(
+      elevation: 1,
+      child: ListTile(
+          tileColor: Theme.of(context).colorScheme.surface,
+          contentPadding:
+              const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 12),
+          onTap: () => onTap?.call(),
+          title: Text(
+            displayNote.title,
+            style: Theme.of(context).textTheme.headline6,
           ),
-        ),
-      ),
+          subtitle: Text(
+            displayNote.content,
+            style: Theme.of(context).textTheme.bodyText2,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
+          trailing: IconButton(
+              onPressed: () => onDelete?.call(),
+              color: Theme.of(context).errorColor,
+              constraints: const BoxConstraints(
+                  maxWidth: 48, maxHeight: 48, minWidth: 48, minHeight: 48),
+              icon: const Icon(Icons.delete))),
     );
   }
 }
