@@ -28,8 +28,8 @@ class Note {
   factory Note.fromMap(int id, Map<String, dynamic> map) {
     return Note(
         id: id,
-        title: utf8.decode(map['title']),
-        content: utf8.decode(map['content']),
+        title: utf8.decode([...map['title']]),
+        content: utf8.decode([...map['content']]),
         dateCreated: dateFromEpoch(map['dateCreated']),
         dateEdited: dateFromEpoch(map['dateEdited']));
   }

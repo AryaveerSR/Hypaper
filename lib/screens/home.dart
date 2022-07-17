@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hypaper/ui/note_card.dart';
 
 import '../ui/app_bar/app_bar.dart';
-import '../services/notes.dart';
+import '../services/notes/notes.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -34,6 +35,7 @@ class _HomeScreen extends State<HomeScreen> {
         dateEdited: DateTime.now());
 
     await _notesRepository.addNote(newNote);
+    print("e");
     _loadNotes();
   }
 
@@ -53,15 +55,26 @@ class _HomeScreen extends State<HomeScreen> {
       appBar: const MyAppBar(),
       drawer: const Drawer(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _addNote,
         backgroundColor: Theme.of(context).primaryColor,
         child: const Icon(Icons.add),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const <Widget>[],
-      ),
+      body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _notes
+                  .map((note) => NoteCard(
+                        displayNote: note,
+                        onDelete: () {
+                          _deleteNote(note);
+                        },
+                      ))
+                  .toList(),
+            ),
+          )),
     );
   }
 }
