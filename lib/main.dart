@@ -4,6 +4,7 @@ import 'package:theme_provider/theme_provider.dart';
 import 'screens/home.dart';
 import 'screens/notes.dart';
 import 'screens/splash.dart';
+import 'screens/editor.dart';
 import 'services/init.dart';
 import 'services/theme.dart';
 
@@ -36,6 +37,7 @@ class _App extends State<App> {
                       theme: ThemeProvider.themeOf(themeContext).data,
                       routes: {
                         '/notes': (context) => const NoteScreen(),
+                        '/edit': (context) => const EditorScreen(),
                       },
                       home: FutureBuilder(
                         future: _initFuture,

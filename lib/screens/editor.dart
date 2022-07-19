@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import '../services/notes/notes.dart';
 import '../ui/app_bar/app_bar.dart';
 
-class NoteScreen extends StatefulWidget {
-  const NoteScreen({Key? key}) : super(key: key);
+class EditorScreen extends StatefulWidget {
+  const EditorScreen({Key? key}) : super(key: key);
   @override
-  State<NoteScreen> createState() => _NoteScreen();
+  State<EditorScreen> createState() => _EditorScreen();
 }
 
-class _NoteScreen extends State<NoteScreen> {
+class _EditorScreen extends State<EditorScreen> {
+  final NotesRepository _notesRepository = GetIt.I.get();
   Note? note;
 
-  void _editNote() {
-    Navigator.of(context).pushNamed('/edit', arguments: note);
+  void _editNote() async {
+    Navigator.of(context).pop();
+    await _notesRepository.updateNote(note!);
   }
 
   @override
@@ -21,12 +24,12 @@ class _NoteScreen extends State<NoteScreen> {
 
     return Scaffold(
       appBar: const MyAppBar(
-        title: "View Note",
+        title: "Edit Note",
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _editNote,
         backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(Icons.edit),
+        child: const Icon(Icons.save),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     );

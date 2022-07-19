@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
-  NotesRepository _notesRepository = GetIt.I.get();
+  final NotesRepository _notesRepository = GetIt.I.get();
   List<Note> _notes = [];
 
   @override
@@ -44,6 +44,14 @@ class _HomeScreen extends State<HomeScreen> {
     _loadNotes();
   }
 
+  _viewNote(Note note) {
+    Navigator.of(context).pushNamed('/notes', arguments: note);
+  }
+
+  _editNote(Note note) {
+    Navigator.of(context).pushNamed('/edit', arguments: note);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,15 +69,15 @@ class _HomeScreen extends State<HomeScreen> {
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: _notes
-                  .map((note) => NoteCard(
-                      displayNote: note,
-                      onDelete: () => _deleteNote(note),
-                      onTap: () => Navigator.of(context)
-                          .pushNamed('/notes', arguments: note)))
-                  .toList(),
-            ),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: (_notes
+                    .map((note) => NoteCard(
+                          displayNote: note,
+                          onDelete: () => _deleteNote(note),
+                          onTap: () => _viewNote(note),
+                          onEdit: () => _editNote(note),
+                        ))
+                    .toList())),
           )),
     );
   }
