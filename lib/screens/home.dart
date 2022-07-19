@@ -44,13 +44,11 @@ class _HomeScreen extends State<HomeScreen> {
     _loadNotes();
   }
 
-  _viewNote(Note note) {
-    Navigator.of(context).pushNamed('/notes', arguments: note);
-  }
+  _viewNote(Note note) =>
+      Navigator.of(context).pushNamed('/notes', arguments: note);
 
-  _editNote(Note note) {
-    Navigator.of(context).pushNamed('/edit', arguments: note);
-  }
+  _editNote(Note note) =>
+      Navigator.of(context).pushNamed('/edit', arguments: note);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +64,7 @@ class _HomeScreen extends State<HomeScreen> {
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

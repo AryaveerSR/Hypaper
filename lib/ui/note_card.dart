@@ -35,7 +35,7 @@ class NoteCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "Last Edited: ",
+                    "Last Edited ",
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text(

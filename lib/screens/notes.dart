@@ -11,9 +11,7 @@ class NoteScreen extends StatefulWidget {
 class _NoteScreen extends State<NoteScreen> {
   Note? note;
 
-  void _editNote() {
-    Navigator.of(context).pushNamed('/edit', arguments: note);
-  }
+  void _editNote() => Navigator.of(context).pushNamed('/edit', arguments: note);
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +27,27 @@ class _NoteScreen extends State<NoteScreen> {
         child: const Icon(Icons.edit),
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(note!.title,
+                style: TextStyle(
+                    fontSize: 24.0,
+                    color: Theme.of(context).textTheme.headline5!.color,
+                    fontWeight: FontWeight.w500)),
+            const SizedBox(height: 16.0),
+            Text(note!.content, style: Theme.of(context).textTheme.bodyText2),
+            const SizedBox(height: 16.0),
+            Text('Created ${Note.timeAgo(note!.dateCreated)}',
+                style: Theme.of(context).textTheme.caption),
+            const SizedBox(height: 8),
+            Text('Last Edited ${Note.timeAgo(note!.dateEdited)}',
+                style: Theme.of(context).textTheme.caption),
+          ],
+        ),
+      ),
     );
   }
 }
