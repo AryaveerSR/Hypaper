@@ -20,61 +20,62 @@ class NoteCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap?.call(),
       child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         color: Theme.of(context).colorScheme.surface,
-        elevation: 0,
+        elevation: 2,
         child: Column(
           children: [
             ListTile(
-              contentPadding: const EdgeInsets.only(
-                  left: 16, right: 16, top: 12, bottom: 2),
-              title: Text(
-                displayNote.title,
-                style: Theme.of(context).textTheme.headline6,
+              contentPadding: const EdgeInsets.only(left: 16, right: 16),
+              title: Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(
+                  displayNote.title,
+                  style: Theme.of(context).textTheme.headline6,
+                ),
               ),
-              subtitle: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Last Edited ",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Text(
-                    Note.timeAgo(displayNote.dateEdited),
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 4, bottom: 2),
+                child: Text(
+                  'Last Edited ${Note.timeAgo(displayNote.dateEdited)}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              trailing: Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        onPressed: () => onEdit?.call(),
+                        constraints: const BoxConstraints(
+                            maxWidth: 48,
+                            maxHeight: 48,
+                            minWidth: 48,
+                            minHeight: 48),
+                        icon: const Icon(Icons.edit)),
+                    IconButton(
+                        onPressed: () => onDelete?.call(),
+                        color: Theme.of(context).errorColor,
+                        constraints: const BoxConstraints(
+                            maxWidth: 48,
+                            maxHeight: 48,
+                            minWidth: 48,
+                            minHeight: 48),
+                        icon: const Icon(Icons.delete))
+                  ],
+                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 16),
+              padding: const EdgeInsets.only(
+                  left: 16, bottom: 12, right: 16, top: 4),
               child: Text(
                 displayNote.content,
                 style: Theme.of(context).textTheme.bodyText2,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                    onPressed: () => onEdit?.call(),
-                    constraints: const BoxConstraints(
-                        maxWidth: 48,
-                        maxHeight: 48,
-                        minWidth: 48,
-                        minHeight: 48),
-                    icon: const Icon(Icons.edit)),
-                IconButton(
-                    onPressed: () => onDelete?.call(),
-                    color: Theme.of(context).errorColor,
-                    constraints: const BoxConstraints(
-                        maxWidth: 48,
-                        maxHeight: 48,
-                        minWidth: 48,
-                        minHeight: 48),
-                    icon: const Icon(Icons.delete))
-              ],
             ),
           ],
         ),

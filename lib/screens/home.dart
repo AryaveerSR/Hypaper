@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hypaper/screens/editor.dart';
+import 'package:hypaper/screens/viewer.dart';
 import 'package:hypaper/ui/note_card.dart';
 
 import '../ui/app_bar/app_bar.dart';
@@ -30,13 +32,19 @@ class _HomeScreen extends State<HomeScreen> {
   _addNote() async {
     final newNote = Note(
         title: "Untitled Note",
-        content:
-            "This is an untitled note. You can edit it by clicking on the pencil icon.",
+        content: "This is an untitled note. You can edit it here.",
         dateCreated: DateTime.now(),
         dateEdited: DateTime.now());
 
-    await _notesRepository.addNote(newNote);
-    _loadNotes();
+    final newID = await _notesRepository.addNote(newNote);
+    _editNote(
+        Note(
+            id: newID,
+            title: "Untitled Note",
+            content: "This is an untitled note. You can edit it here.",
+            dateCreated: DateTime.now(),
+            dateEdited: DateTime.now()),
+        isNew: true);
   }
 
   _deleteNote(Note note) async {
@@ -44,14 +52,21 @@ class _HomeScreen extends State<HomeScreen> {
     _loadNotes();
   }
 
-  _viewNote(Note note) =>
-      Navigator.of(context).pushNamed('/notes', arguments: note);
+  _viewNote(Note note) => Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => ViewerScreen(
+              updateNote: () async =>
+                  await _notesRepository.getNote(note.id!))));
 
-  _editNote(Note note) =>
-      Navigator.of(context).pushNamed('/edit', arguments: note);
+  _editNote(Note note, {bool isNew = false}) => Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => EditorScreen(note: note, isNew: isNew)));
 
   @override
   Widget build(BuildContext context) {
+    _loadNotes();
     return Scaffold(
       appBar: const MyAppBar(
         title: "Hypaper",
