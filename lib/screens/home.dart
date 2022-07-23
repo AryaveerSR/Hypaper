@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hypaper/screens/editor.dart';
-import 'package:hypaper/screens/viewer.dart';
-import 'package:hypaper/ui/note_card.dart';
 
+import 'editor.dart';
+import 'viewer.dart';
+import '../ui/note_card.dart';
 import '../ui/app_bar/app_bar.dart';
 import '../services/notes/notes.dart';
+import '../ui/drawer/drawer.dart';
+import '../ui/bottom_navigation/bottom_navigation.dart';
+
+enum SortBy { dateCreated, dateEdited }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -17,6 +21,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreen extends State<HomeScreen> {
   final NotesRepository _notesRepository = GetIt.I.get();
   List<Note> _notes = [];
+  List<Note> selectedNotes = [];
+  SortBy sortValue = SortBy.dateCreated;
 
   @override
   void initState() {
@@ -26,7 +32,26 @@ class _HomeScreen extends State<HomeScreen> {
 
   _loadNotes() async {
     final notes = await _notesRepository.getAllNotes();
-    setState(() => _notes = notes);
+    notes.sort((a, b) {
+      if (sortValue == SortBy.dateCreated) {
+        return a.dateCreated.compareTo(b.dateCreated);
+      } else {
+        return a.dateEdited.compareTo(b.dateEdited);
+      }
+    });
+
+    setState(() => _notes = notes.reversed.toList());
+  }
+
+  _selectNote(Note note) {
+    setState(() {
+      if (selectedNotes.contains(note)) {
+        selectedNotes.remove(note);
+      } else {
+        selectedNotes.add(note);
+      }
+    });
+    print(selectedNotes.toString());
   }
 
   _addNote() async {
@@ -47,9 +72,35 @@ class _HomeScreen extends State<HomeScreen> {
         isNew: true);
   }
 
-  _deleteNote(Note note) async {
+  _repoDeleteNote(Note note) async {
     await _notesRepository.deleteNote(note.id!);
     _loadNotes();
+  }
+
+  _deleteNote(Note note) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Note'),
+        content: const Text('Are you sure you want to delete this note?'),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: Text(
+              'Delete',
+              style: TextStyle(color: Theme.of(context).errorColor),
+            ),
+            onPressed: () {
+              _repoDeleteNote(note);
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   _viewNote(Note note) => Navigator.push(
@@ -71,7 +122,10 @@ class _HomeScreen extends State<HomeScreen> {
       appBar: const MyAppBar(
         title: "Hypaper",
       ),
-      drawer: const Drawer(),
+      drawer: const AppDrawer(),
+      bottomNavigationBar: BottomNavigation(
+        showDelete: selectedNotes.isNotEmpty,
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNote,
         backgroundColor: Theme.of(context).primaryColor,
@@ -79,18 +133,67 @@ class _HomeScreen extends State<HomeScreen> {
       ),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(12),
           child: SingleChildScrollView(
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: (_notes
-                    .map((note) => NoteCard(
-                          displayNote: note,
-                          onDelete: () => _deleteNote(note),
-                          onTap: () => _viewNote(note),
-                          onEdit: () => _editNote(note),
-                        ))
-                    .toList())),
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: Text(
+                          "Sort By",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
+                      DropdownButton(
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        elevation: 0,
+                        onChanged: (_) {},
+                        value: sortValue == SortBy.dateCreated
+                            ? "Date Created"
+                            : "Date Edited",
+                        items: [
+                          DropdownMenuItem(
+                            value: "Date Created",
+                            child: Text(
+                              "Date Created",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            onTap: () => {
+                              setState(() {
+                                sortValue = SortBy.dateCreated;
+                              })
+                            },
+                          ),
+                          DropdownMenuItem(
+                            value: "Date Edited",
+                            child: Text(
+                              "Date Edited",
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                            onTap: () => {
+                              setState(() {
+                                sortValue = SortBy.dateEdited;
+                              })
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  ...(_notes
+                      .map((note) => NoteCard(
+                            displayNote: note,
+                            onDelete: () => _deleteNote(note),
+                            onTap: () => _viewNote(note),
+                            onEdit: () => _editNote(note),
+                            onSelect: () => _selectNote(note),
+                          ))
+                      .toList())
+                ]),
           )),
     );
   }
