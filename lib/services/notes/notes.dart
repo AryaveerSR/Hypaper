@@ -24,6 +24,12 @@ class NotesRepository {
   Future deleteNote(int noteID) async =>
       await _store.record(noteID).delete(_database);
 
+  Future deleteNotes(List<int> noteIDs) async {
+    for (final noteID in noteIDs) {
+      await deleteNote(noteID);
+    }
+  }
+
   Future<Note> getNote(int noteID) async {
     final snapshot = await _store.record(noteID).getSnapshot(_database);
     return Note.fromMap(snapshot!.key, snapshot.value);

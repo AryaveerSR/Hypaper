@@ -79,8 +79,25 @@ class _HomeScreen extends State<HomeScreen> {
   Widget build(BuildContext context) {
     _loadNotes();
     return Scaffold(
-      appBar: const MyAppBar(
+      appBar: MyAppBar(
         title: "Hypaper",
+        isSelected: selectedNotes.isNotEmpty,
+        onCancel: () {
+          setState(() => selectedNotes = []);
+        },
+        onDelete: () {
+          showDialog(
+              context: context,
+              builder: (context) => DeleteDialog(
+                    onDelete: () async {
+                      notifySnack(context, type: NotifyType.deleted);
+                      await _notesRepository.deleteNotes(selectedNotes);
+                      setState(() => selectedNotes = []);
+                      _loadNotes();
+                    },
+                    deleteType: DeleteType.all,
+                  ));
+        },
       ),
       drawer: const AppDrawer(),
       floatingActionButton: FloatingActionButton(
