@@ -26,7 +26,7 @@ final light = ThemeData(
     brightness: Brightness.light,
     primary: Color(0xff0a4396),
     secondary: Color(0xff0a4396),
-    surface: Color(0xffF1F5F9),
+    surface: Color(0xFFF5F5F5),
     background: Color(0xffe2e8f0),
     error: Color(0xffef4444),
     onPrimary: Color(0xffF1F5F9),
