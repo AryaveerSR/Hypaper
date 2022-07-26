@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/notes/notes.dart';
-import '../ui/app_bar/app_bar.dart';
+import '../ui/app_bar.dart';
 import 'editor.dart';
 
 class ViewerScreen extends StatefulWidget {
@@ -43,19 +43,38 @@ class _ViewerScreen extends State<ViewerScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(note!.title,
-                style: TextStyle(
-                    fontSize: 24.0,
-                    color: Theme.of(context).textTheme.headline5!.color,
-                    fontWeight: FontWeight.w500)),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(note!.title,
+                    style: TextStyle(
+                        fontSize: 24.0,
+                        color: Theme.of(context).textTheme.headline5!.color,
+                        fontWeight: FontWeight.w500)),
+                const SizedBox(height: 16.0),
+                Text('Created ${Note.timeAgo(note!.dateCreated)}',
+                    style: Theme.of(context).textTheme.caption),
+                const SizedBox(height: 8),
+                Text('Last Edited ${Note.timeAgo(note!.dateEdited)}',
+                    style: Theme.of(context).textTheme.caption),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Text('Tags: '),
+                    ...note!.tags!.map((tag) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        child: Chip(label: Text(tag))))
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Divider(
+                  color: Theme.of(context).textTheme.headline5!.color,
+                  thickness: 1,
+                ),
+              ],
+            ),
             const SizedBox(height: 16.0),
             Text(note!.content, style: Theme.of(context).textTheme.bodyText2),
-            const SizedBox(height: 16.0),
-            Text('Created ${Note.timeAgo(note!.dateCreated)}',
-                style: Theme.of(context).textTheme.caption),
-            const SizedBox(height: 8),
-            Text('Last Edited ${Note.timeAgo(note!.dateEdited)}',
-                style: Theme.of(context).textTheme.caption),
           ],
         ),
       ),

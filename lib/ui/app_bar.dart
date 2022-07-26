@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 
@@ -10,19 +11,18 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
         preferredSize: const Size.fromHeight(20),
         child: AppBar(
-          leading: title == "Notes"
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.of(context).pop(),
-                )
-              : null,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          iconTheme: IconThemeData(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black),
           elevation: 1,
-          title: Text(title),
+          title: Text(title, style: Theme.of(context).textTheme.headline6),
           actions: [
             IconButton(
-              icon: Icon(Theme.of(context).brightness == Brightness.dark
-                  ? Icons.sunny
-                  : Icons.brightness_2_rounded),
+              icon: Theme.of(context).brightness == Brightness.dark
+                  ? const Icon(CupertinoIcons.brightness, color: Colors.white)
+                  : const Icon(CupertinoIcons.moon, color: Colors.black),
               onPressed: () => ThemeProvider.controllerOf(context).nextTheme(),
             ),
           ],

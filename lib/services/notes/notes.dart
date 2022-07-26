@@ -7,8 +7,15 @@ class NotesRepository {
   final Database _database = GetIt.I.get();
   final StoreRef _store = intMapStoreFactory.store("notes");
 
-  Future<int> addNote(Note note) async {
-    return await _store.add(_database, note.toMap());
+  Future<Note> createNote() async {
+    final note = Note(
+      title: "Untitled Note",
+      content: "This is an untitled note. You can edit it here.",
+      dateCreated: DateTime.now(),
+      dateEdited: DateTime.now(),
+    );
+    final id = await _store.add(_database, note.toMap());
+    return note.copyWith(id: id);
   }
 
   Future updateNote(Note note) async =>
