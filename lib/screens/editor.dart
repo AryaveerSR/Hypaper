@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:material_tag_editor/tag_editor.dart';
 
 import '../services/notes/notes.dart';
 import '../ui/app_bar.dart';
 import '../ui/dialogs/notify.dart';
+import '../ui/tag_editor.dart';
 
 class EditorScreen extends StatefulWidget {
   final Note note;
@@ -89,17 +89,13 @@ class _EditorScreen extends State<EditorScreen> {
               ),
               const SizedBox(height: 16.0),
               TagEditor(
-                  length: tags.length,
                   delimiters: const [',', ' '],
-                  hasAddButton: true,
                   inputDecoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: 'Hint Text...',
                   ),
-                  onTagChanged: (newValue) {
-                    setState(() {
-                      tags.add(newValue);
-                    });
+                  updateTags: (newValue) {
+                    setState(() => tags = newValue);
                   },
                   tagBuilder: (context, index) => Chip(
                         labelPadding: const EdgeInsets.only(left: 8.0),
@@ -113,7 +109,8 @@ class _EditorScreen extends State<EditorScreen> {
                             tags.removeAt(index);
                           });
                         },
-                      )),
+                      ),
+                  tags: tags),
               const SizedBox(height: 16.0),
               Text('Created ${Note.timeAgo(widget.note.dateCreated)}',
                   style: Theme.of(context).textTheme.caption),

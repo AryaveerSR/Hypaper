@@ -37,7 +37,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           actions: [
             isSelected!
                 ? IconButton(
-                    icon: Icon(Icons.delete),
+                    icon: Icon(
+                      Icons.delete,
+                      color: Theme.of(context).errorColor,
+                    ),
                     onPressed: onDelete,
                   )
                 : IconButton(
