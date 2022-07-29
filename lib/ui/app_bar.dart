@@ -4,14 +4,14 @@ import 'package:theme_provider/theme_provider.dart';
 
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final bool? isSelected;
+  final bool isSelected;
   final Function()? onDelete;
   final Function()? onCancel;
 
   const MyAppBar(
       {Key? key,
       required this.title,
-      this.isSelected,
+      required this.isSelected,
       this.onDelete,
       this.onCancel})
       : super(key: key);
@@ -21,21 +21,16 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
         preferredSize: const Size.fromHeight(20),
         child: AppBar(
-          leading: isSelected!
+          leading: isSelected
               ? IconButton(
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                   onPressed: onCancel,
                 )
               : null,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          iconTheme: IconThemeData(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black),
           elevation: 1,
-          title: Text(title, style: Theme.of(context).textTheme.headline6),
+          title: Text(title),
           actions: [
-            isSelected!
+            isSelected
                 ? IconButton(
                     icon: Icon(
                       Icons.delete,
@@ -45,9 +40,8 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                   )
                 : IconButton(
                     icon: Theme.of(context).brightness == Brightness.dark
-                        ? const Icon(CupertinoIcons.brightness,
-                            color: Colors.white)
-                        : const Icon(CupertinoIcons.moon, color: Colors.black),
+                        ? const Icon(CupertinoIcons.brightness)
+                        : const Icon(CupertinoIcons.moon),
                     onPressed: () =>
                         ThemeProvider.controllerOf(context).nextTheme(),
                   ),

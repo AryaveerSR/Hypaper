@@ -39,7 +39,7 @@ class _EditorScreen extends State<EditorScreen> {
     if (!hasInit) {
       contentController.text = widget.note.content;
       titleController.text = widget.note.title;
-      for (String tag in widget.note.tags!) {
+      for (String tag in (widget.note.tags ?? [])) {
         tags.add(tag);
       }
       setState(() => hasInit = true);
@@ -52,6 +52,7 @@ class _EditorScreen extends State<EditorScreen> {
       child: Scaffold(
         appBar: MyAppBar(
           title: widget.isNew ? "New Note" : "Edit Note",
+          isSelected: false,
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _editNote(widget.note.copyWith(

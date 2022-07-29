@@ -31,6 +31,7 @@ class _ViewerScreen extends State<ViewerScreen> {
     return Scaffold(
       appBar: const MyAppBar(
         title: "View Note",
+        isSelected: false,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _editNote,

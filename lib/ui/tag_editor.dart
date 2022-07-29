@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TagEditor extends StatelessWidget {
+class TagEditor extends StatefulWidget {
   const TagEditor({
     Key? key,
     required this.tags,
@@ -17,18 +17,29 @@ class TagEditor extends StatelessWidget {
   final Widget Function(BuildContext context, int index) tagBuilder;
 
   @override
+  State<TagEditor> createState() => _TagEditorState();
+}
+
+class _TagEditorState extends State<TagEditor> {
+  bool hasInit = false;
+  final tagController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
+    if (!hasInit) {
+      tagController.text = widget.tags.join(widget.delimiters[0]);
+      setState(() {
+        hasInit = true;
+      });
+    }
     return TextField(
-      controller: TextEditingController(text: tags.join(delimiters[0])),
+      controller: tagController,
       minLines: 1,
       maxLines: null,
-      decoration: inputDecoration,
+      decoration: widget.inputDecoration,
       onChanged: (newValue) {
-        final newTags = newValue.split(delimiters[0]);
-        if (newTags.length > tags.length) {
-          newTags.removeAt(newTags.length - 1);
-        }
-        updateTags(newTags);
+        final newTags = newValue.split(widget.delimiters[0]);
+        widget.updateTags(newTags);
       },
     );
   }
