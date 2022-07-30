@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../services/notes/notes.dart';
+import '../services/notes.dart';
 import '../ui/app_bar.dart';
 import '../ui/dialogs/notify.dart';
 import '../ui/tag_editor.dart';
@@ -20,12 +20,22 @@ class _EditorScreen extends State<EditorScreen> {
   final titleController = TextEditingController();
   final contentController = TextEditingController();
   List<String> tags = [];
-  bool hasInit = false;
 
   void _editNote(Note updatedNote) async {
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(updatedNote);
     notifySnack(context, type: NotifyType.updated);
     await _notesRepository.updateNote(updatedNote);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    contentController.text = widget.note.content;
+    titleController.text = widget.note.title;
+    for (String tag in (widget.note.tags ?? [])) {
+      tags.add(tag);
+    }
+    setState(() {});
   }
 
   @override
@@ -36,15 +46,6 @@ class _EditorScreen extends State<EditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!hasInit) {
-      contentController.text = widget.note.content;
-      titleController.text = widget.note.title;
-      for (String tag in (widget.note.tags ?? [])) {
-        tags.add(tag);
-      }
-      setState(() => hasInit = true);
-    }
-
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -90,24 +91,21 @@ class _EditorScreen extends State<EditorScreen> {
               ),
               const SizedBox(height: 16.0),
               TagEditor(
-                  delimiters: const [',', ' '],
                   inputDecoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Hint Text...',
+                    border: UnderlineInputBorder(),
+                    hintText: 'New Tag',
                   ),
-                  updateTags: (newValue) {
-                    setState(() => tags = newValue);
-                  },
-                  tagBuilder: (context, index) => Chip(
+                  updateTags: (newValue) => setState(() => tags = newValue),
+                  tagBuilder: (context, tag) => Chip(
                         labelPadding: const EdgeInsets.only(left: 8.0),
-                        label: Text(tags[index]),
+                        label: Text(tag),
                         deleteIcon: const Icon(
                           Icons.close,
                           size: 18,
                         ),
                         onDeleted: () {
                           setState(() {
-                            tags.removeAt(index);
+                            tags.remove(tag);
                           });
                         },
                       ),

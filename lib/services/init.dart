@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 
-import 'notes/notes.dart';
+import 'notes.dart';
 
 class Init {
   static Future initialize() async {

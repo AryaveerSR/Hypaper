@@ -1,13 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hypaper/ui/dialogs/delete.dart';
-import 'package:hypaper/ui/dialogs/notify.dart';
 
-import 'editor.dart';
-import 'viewer.dart';
+import '../helpers/home.dart';
 import '../ui/note_card.dart';
 import '../ui/app_bar.dart';
-import '../services/notes/notes.dart';
+import '../services/notes.dart';
 import '../ui/drawer.dart';
 import '../ui/sort_dropdown.dart';
 
@@ -19,10 +18,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreen extends State<HomeScreen> {
-  final NotesRepository _notesRepository = GetIt.I.get();
   List<Note> _notes = [];
   List<int> selectedNotes = [];
   SortType sortValue = SortType.dateCreated;
+
+  final HomeHelper homeHelper = HomeHelper(GetIt.I.get());
 
   @override
   void initState() {
@@ -30,50 +30,45 @@ class _HomeScreen extends State<HomeScreen> {
     _loadNotes();
   }
 
-  _loadNotes() async {
-    final notes = await _notesRepository.getAllNotes();
-    notes.sort((a, b) => sortValue == SortType.dateCreated
-        ? a.dateCreated.compareTo(b.dateCreated)
-        : a.dateEdited.compareTo(b.dateEdited));
+  Future<void> _loadNotes() async => homeHelper
+      .getNotes(sortValue)
+      .then((notes) => setState(() => _notes = notes));
 
-    setState(() => _notes = notes.reversed.toList());
-  }
-
-  _addNote() async {
-    final newNote = await _notesRepository.createNote();
-    _editNote(newNote);
-  }
-
-  _deleteNote(Note note) {
+  void _deleteNote(Note note) {
     showDialog(
         context: context,
         builder: (context) => DeleteDialog(
               onDelete: () async {
-                notifySnack(context, type: NotifyType.deleted);
-                await _notesRepository.deleteNote(note.id!);
-                _loadNotes();
+                if (selectedNotes.contains(note.id)) {
+                  setState(() => selectedNotes.remove(note.id));
+                }
+                homeHelper.deleteNote(context, note).then((_) => _loadNotes());
               },
               deleteType: DeleteType.single,
             ));
   }
 
-  _selectNote(Note note) {
-    selectedNotes.contains(note.id)
-        ? selectedNotes.remove(note.id)
-        : selectedNotes.add(note.id!);
+  void _deleteBulk() {
+    showDialog(
+        context: context,
+        builder: (context) => DeleteDialog(
+              deleteType: DeleteType.all,
+              onDelete: () async {
+                homeHelper
+                    .deleteBulk(context, selectedNotes)
+                    .then((_) => _loadNotes());
+                setState(() => selectedNotes = []);
+              },
+            ));
   }
 
-  _viewNote(Note note) => Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => ViewerScreen(
-              updateNote: () async =>
-                  await _notesRepository.getNote(note.id!))));
-
-  _editNote(Note note) => Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => EditorScreen(note: note, isNew: true)));
+  _selectNote(Note note) {
+    setState(() {
+      selectedNotes.contains(note.id)
+          ? selectedNotes.remove(note.id)
+          : selectedNotes.add(note.id!);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,53 +77,40 @@ class _HomeScreen extends State<HomeScreen> {
       appBar: MyAppBar(
         title: "Hypaper",
         isSelected: selectedNotes.isNotEmpty,
-        onCancel: () {
-          setState(() => selectedNotes = []);
-        },
-        onDelete: () {
-          showDialog(
-              context: context,
-              builder: (context) => DeleteDialog(
-                    onDelete: () async {
-                      notifySnack(context, type: NotifyType.deleted);
-                      await _notesRepository.deleteNotes(selectedNotes);
-                      setState(() => selectedNotes = []);
-                      _loadNotes();
-                    },
-                    deleteType: DeleteType.all,
-                  ));
-        },
+        onCancel: () => setState(() => selectedNotes = []),
+        onDelete: _deleteBulk,
       ),
       drawer: const AppDrawer(),
       floatingActionButton: FloatingActionButton(
-          onPressed: _addNote,
+          onPressed: () => homeHelper.createNote(context),
           backgroundColor: Theme.of(context).primaryColor,
           child: const Icon(Icons.add)),
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Padding(
-          padding: const EdgeInsets.all(12),
-          child: SingleChildScrollView(
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SortDropdown(
-                      value: sortValue,
-                      onChanged: (value) => setState(() => sortValue = value)),
-                  ...(_notes
-                      .map((note) => NoteCard(
-                            displayNote: note,
-                            isSelected: selectedNotes.contains(note.id),
-                            onDelete: () => _deleteNote(note),
-                            onTap: () {
-                              selectedNotes.isEmpty
-                                  ? _viewNote(note)
-                                  : _selectNote(note);
-                            },
-                            onSelect: () => _selectNote(note),
-                          ))
-                      .toList())
-                ]),
-          )),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 8, left: 20, right: 20),
+                child: SortDropdown(
+                    value: sortValue,
+                    onChanged: (value) => setState(() => sortValue = value)),
+              ),
+              ...(_notes
+                  .map((note) => NoteCard(
+                        displayNote: note,
+                        isSelected: selectedNotes.contains(note.id),
+                        onDelete: () => _deleteNote(note),
+                        onSelect: () => _selectNote(note),
+                        onTap: () => selectedNotes.isEmpty
+                            ? homeHelper.openViewer(context, note)
+                            : _selectNote(note),
+                      ))
+                  .toList())
+            ]),
+      ),
     );
   }
 }

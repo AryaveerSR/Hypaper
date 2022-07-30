@@ -10,10 +10,5 @@ void notifySnack(BuildContext context, {required NotifyType type}) {
       content: Text(
           'Note ${type == NotifyType.updated ? 'Updated' : 'Deleted'}',
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
-      duration: const Duration(seconds: 2),
-      action: SnackBarAction(
-          textColor: Theme.of(context).primaryColor,
-          label: "OK",
-          onPressed: () =>
-              ScaffoldMessenger.of(context).hideCurrentSnackBar())));
+      duration: const Duration(seconds: 2)));
 }

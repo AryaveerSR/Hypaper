@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/notes/notes.dart';
+import '../services/notes.dart';
 import '../ui/app_bar.dart';
 import 'editor.dart';
 
@@ -12,13 +12,16 @@ class ViewerScreen extends StatefulWidget {
 
 class _ViewerScreen extends State<ViewerScreen> {
   Note? note;
-  void _editNote() => Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => EditorScreen(
-                note: note!,
-                isNew: false,
-              )));
+  void _editNote() async {
+    Note updatedNote = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditorScreen(
+                  note: note!,
+                  isNew: false,
+                )));
+    setState(() => note = updatedNote);
+  }
 
   _loadNote() async {
     final updatedNote = await widget.updateNote();
@@ -26,8 +29,13 @@ class _ViewerScreen extends State<ViewerScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     _loadNote();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: const MyAppBar(
         title: "View Note",

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/notes/notes.dart';
+import '../services/notes.dart';
 
 class NoteCard extends StatelessWidget {
   final Note displayNote;
@@ -23,11 +23,11 @@ class NoteCard extends StatelessWidget {
       onTap: () => onTap?.call(),
       onLongPress: () => onSelect?.call(),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(2)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
         color: isSelected
             ? Theme.of(context).primaryColor
             : Theme.of(context).colorScheme.surface,
-        elevation: 0,
+        elevation: 1,
         child: ListTile(
           contentPadding: const EdgeInsets.only(left: 8, right: 8),
           title: Padding(
@@ -39,13 +39,16 @@ class NoteCard extends StatelessWidget {
           ),
           subtitle: Padding(
             padding: const EdgeInsets.only(top: 4, bottom: 2),
-            child: Row(children: [
-              ...(displayNote.tags!
-                  .map((tag) => Container(
-                      margin: const EdgeInsets.only(right: 8),
-                      child: Chip(label: Text(tag))))
-                  .toList()),
-            ]),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(children: [
+                ...(displayNote.tags!
+                    .map((tag) => Container(
+                        margin: const EdgeInsets.only(right: 8),
+                        child: Chip(label: Text(tag))))
+                    .toList()),
+              ]),
+            ),
           ),
           trailing: IconButton(
               onPressed: () => onDelete?.call(),

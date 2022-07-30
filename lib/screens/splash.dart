@@ -18,10 +18,7 @@ class SplashScreen extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: Color(
-                          Theme.of(context).brightness == Brightness.dark
-                              ? 0xFFFFFFFF
-                              : 0xff0f172a)),
+                      color: Theme.of(context).textTheme.headline6!.color),
                 ),
                 const SizedBox(height: 16),
                 const SizedBox(width: 128, child: LinearProgressIndicator())
