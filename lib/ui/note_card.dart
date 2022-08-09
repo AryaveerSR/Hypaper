@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+
 import '../services/notes.dart';
+import 'tag_chip.dart';
 
 class NoteCard extends StatelessWidget {
   final Note displayNote;
   final Function()? onTap;
   final Function()? onDelete;
   final Function()? onSelect;
+  final double clearance;
   final bool isSelected;
 
   const NoteCard(
@@ -14,7 +17,8 @@ class NoteCard extends StatelessWidget {
       required this.isSelected,
       this.onTap,
       this.onDelete,
-      this.onSelect})
+      this.onSelect,
+      this.clearance = 0})
       : super(key: key);
 
   @override
@@ -23,39 +27,64 @@ class NoteCard extends StatelessWidget {
       onTap: () => onTap?.call(),
       onLongPress: () => onSelect?.call(),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        margin: EdgeInsets.only(bottom: clearance),
+        shadowColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.outline)),
         color: isSelected
-            ? Theme.of(context).primaryColor
-            : Theme.of(context).colorScheme.surface,
-        elevation: 1,
-        child: ListTile(
-          contentPadding: const EdgeInsets.only(left: 8, right: 8),
-          title: Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              displayNote.title,
-              style: Theme.of(context).textTheme.bodyLarge,
+            ? Theme.of(context).colorScheme.secondaryContainer
+            : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+                title: Text(displayNote.title, overflow: TextOverflow.ellipsis),
+                subtitle:
+                    Text(displayNote.content, overflow: TextOverflow.ellipsis)),
+            Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 4),
+                          ...(displayNote.tags!
+                              .map((e) => TagChip(label: e))
+                              .map((tag) => Container(
+                                  margin: const EdgeInsets.only(right: 8),
+                                  child: tag))
+                              .toList())
+                        ],
+                      ),
+                    ),
+                  ),
+                  Row(children: [
+                    TextButton(
+                        child: const Text('View'),
+                        onPressed: () => onTap?.call()),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      child: Text('Delete',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.error)),
+                      onPressed: () => onDelete?.call(),
+                    ),
+                    const SizedBox(width: 8)
+                  ])
+                ],
+              ),
             ),
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 2),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                ...(displayNote.tags!
-                    .map((tag) => Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        child: Chip(label: Text(tag))))
-                    .toList()),
-              ]),
-            ),
-          ),
-          trailing: IconButton(
-              onPressed: () => onDelete?.call(),
-              color: Theme.of(context).errorColor,
-              constraints: const BoxConstraints(
-                  maxWidth: 48, maxHeight: 48, minWidth: 48, minHeight: 48),
-              icon: const Icon(Icons.delete)),
+          ],
         ),
       ),
     );

@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 
-enum DeleteType { single, all }
-
 class DeleteDialog extends StatelessWidget {
   final Function onDelete;
-  final DeleteType deleteType;
+  final bool deleteMultiple;
 
   const DeleteDialog(
-      {Key? key, required this.onDelete, required this.deleteType})
+      {Key? key, required this.onDelete, required this.deleteMultiple})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Delete Note${deleteType == DeleteType.all ? 's' : ''}'),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      title: Text('Delete Note${deleteMultiple ? 's' : ''}'),
       content: Text(
-          'Are you sure you want to delete ${deleteType == DeleteType.single ? "this note" : "these notes"}?'),
+          'Are you sure you want to delete ${deleteMultiple ? "these notes" : "this note"}?'),
       actions: [
         TextButton(
-          child: const Text('Cancel'),
-          onPressed: () => Navigator.pop(context),
-        ),
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context)),
         TextButton(
-          child: Text(
-            'Delete',
-            style: TextStyle(color: Theme.of(context).errorColor),
-          ),
+          child: Text('Delete',
+              style: TextStyle(color: Theme.of(context).errorColor)),
           onPressed: () {
-            onDelete.call();
+            onDelete();
             Navigator.pop(context);
           },
         ),

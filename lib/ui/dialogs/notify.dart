@@ -4,11 +4,12 @@ enum NotifyType { updated, deleted }
 
 void notifySnack(BuildContext context, {required NotifyType type}) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       behavior: SnackBarBehavior.floating,
-      backgroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
-      content: Text(
-          'Note ${type == NotifyType.updated ? 'Updated' : 'Deleted'}',
-          style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
+      content:
+          Text('Note ${type == NotifyType.updated ? 'Updated' : 'Deleted'}'),
+      action: SnackBarAction(
+          textColor: Theme.of(context).colorScheme.onPrimary,
+          label: 'OK',
+          onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar()),
       duration: const Duration(seconds: 2)));
 }

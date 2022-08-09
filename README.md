@@ -1,11 +1,13 @@
 ![Logo](./assets/logo.png)
 
-# Hypaper
+# Hypaper [WIP]
 
-A Notes App. Kinda wip but useable. Also am too lazy for screenshots.
-
-Currently Working on : actually making it look good
+Your Digital Notebook.
 
 ## Download
 
-[Android](./assets/app.apk)
+[Android Universal](./assets/app-universal.apk)
+[Android Arm64](./assets/app-arm.apk)
+[Android x86-64](./assets/app-86.apk)
+
+## Screenshots

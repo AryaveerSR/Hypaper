@@ -32,18 +32,14 @@ class _App extends State<App> {
             child: Builder(
                 builder: (themeContext) => MaterialApp(
                       title: 'Hypaper',
+                      debugShowCheckedModeBanner: false,
                       theme: ThemeProvider.themeOf(themeContext).data,
                       home: FutureBuilder(
-                        future: _initFuture,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.done) {
-                            return const HomeScreen();
-                          } else {
-                            return const SplashScreen();
-                          }
-                        },
-                      ),
+                          future: _initFuture,
+                          builder: (context, snapshot) =>
+                              snapshot.connectionState == ConnectionState.done
+                                  ? const HomeScreen()
+                                  : const SplashScreen()),
                     ))));
   }
 }

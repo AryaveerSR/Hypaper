@@ -24,10 +24,9 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           leading: isSelected
               ? IconButton(
                   icon: const Icon(Icons.close),
-                  onPressed: onCancel,
+                  onPressed: () => onCancel?.call(),
                 )
               : null,
-          elevation: 1,
           title: Text(title),
           actions: [
             isSelected
@@ -36,7 +35,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                       Icons.delete,
                       color: Theme.of(context).errorColor,
                     ),
-                    onPressed: onDelete,
+                    onPressed: () => onDelete?.call(),
                   )
                 : IconButton(
                     icon: Theme.of(context).brightness == Brightness.dark

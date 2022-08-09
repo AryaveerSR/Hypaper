@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../services/notes.dart';
 import '../ui/app_bar.dart';
+import '../ui/tag_chip.dart';
 import 'editor.dart';
 
 class ViewerScreen extends StatefulWidget {
@@ -42,16 +44,13 @@ class _ViewerScreen extends State<ViewerScreen> {
         isSelected: false,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _editNote,
-        backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(Icons.edit),
-      ),
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          onPressed: _editNote, child: const Icon(Icons.edit)),
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -60,26 +59,32 @@ class _ViewerScreen extends State<ViewerScreen> {
                         fontSize: 24.0,
                         color: Theme.of(context).textTheme.headline5!.color,
                         fontWeight: FontWeight.w500)),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 16),
                 Text('Created ${Note.timeAgo(note!.dateCreated)}',
                     style: Theme.of(context).textTheme.caption),
                 const SizedBox(height: 8),
                 Text('Last Edited ${Note.timeAgo(note!.dateEdited)}',
                     style: Theme.of(context).textTheme.caption),
                 const SizedBox(height: 8),
-                Row(
-                  children: [
-                    const Text('Tags: '),
-                    ...note!.tags!.map((tag) => Container(
-                        margin: const EdgeInsets.only(right: 8),
-                        child: Chip(label: Text(tag))))
-                  ],
-                ),
+                (note!.tags!.isNotEmpty
+                    ? SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            const Text('Tags: '),
+                            ...note!.tags!
+                                .map((tag) => TagChip(label: tag))
+                                .map((tag) => Container(
+                                    margin: const EdgeInsets.only(right: 8),
+                                    child: tag))
+                          ],
+                        ),
+                      )
+                    : const SizedBox()),
                 const SizedBox(height: 8),
                 Divider(
-                  color: Theme.of(context).textTheme.headline5!.color,
-                  thickness: 1,
-                ),
+                    color: Theme.of(context).textTheme.headline5!.color,
+                    thickness: 1),
               ],
             ),
             const SizedBox(height: 16.0),

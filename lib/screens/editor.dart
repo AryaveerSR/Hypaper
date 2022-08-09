@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 
 import '../services/notes.dart';
@@ -9,6 +10,7 @@ import '../ui/tag_editor.dart';
 class EditorScreen extends StatefulWidget {
   final Note note;
   final bool isNew;
+
   const EditorScreen({Key? key, required this.note, required this.isNew})
       : super(key: key);
   @override
@@ -47,75 +49,51 @@ class _EditorScreen extends State<EditorScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-      },
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: MyAppBar(
-          title: widget.isNew ? "New Note" : "Edit Note",
-          isSelected: false,
-        ),
+            title: widget.isNew ? "New Note" : "Edit Note", isSelected: false),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _editNote(widget.note.copyWith(
               title: titleController.text,
               content: contentController.text,
               dateEdited: DateTime.now(),
               tags: tags)),
-          backgroundColor: Theme.of(context).primaryColor,
           child: const Icon(Icons.save),
         ),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: [
               TextField(
                 controller: titleController,
-                minLines: 1,
-                maxLines: 1,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(32),
+                ],
                 decoration: const InputDecoration(
-                  labelText: "Title",
-                  border: OutlineInputBorder(),
-                ),
+                    labelText: "Title", border: OutlineInputBorder()),
               ),
-              const SizedBox(height: 16.0),
-              TextField(
-                controller: contentController,
-                minLines: 2,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  labelText: "Content",
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 16),
               TagEditor(
-                  inputDecoration: const InputDecoration(
-                    border: UnderlineInputBorder(),
-                    hintText: 'New Tag',
-                  ),
                   updateTags: (newValue) => setState(() => tags = newValue),
-                  tagBuilder: (context, tag) => Chip(
-                        labelPadding: const EdgeInsets.only(left: 8.0),
-                        label: Text(tag),
-                        deleteIcon: const Icon(
-                          Icons.close,
-                          size: 18,
-                        ),
-                        onDeleted: () {
-                          setState(() {
-                            tags.remove(tag);
-                          });
-                        },
-                      ),
                   tags: tags),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 16),
               Text('Created ${Note.timeAgo(widget.note.dateCreated)}',
                   style: Theme.of(context).textTheme.caption),
               const SizedBox(height: 8),
               Text('Last Edited ${Note.timeAgo(widget.note.dateEdited)}',
                   style: Theme.of(context).textTheme.caption),
+              const SizedBox(height: 24),
+              TextField(
+                controller: contentController,
+                minLines: 2,
+                maxLines: null,
+                decoration: const InputDecoration(
+                    labelText: "Content", border: OutlineInputBorder()),
+              ),
             ],
           ),
         ),
