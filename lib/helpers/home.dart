@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../screens/editor.dart';
 import '../screens/viewer.dart';
 import '../services/notes.dart';
-import '../ui/dialogs/notify.dart';
+import '../ui/notify.dart';
 import '../ui/sort_dropdown.dart';
 
 class HomeHelper {

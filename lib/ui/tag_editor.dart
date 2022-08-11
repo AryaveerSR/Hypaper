@@ -5,12 +5,14 @@ import 'tag_chip.dart';
 class TagEditor extends StatefulWidget {
   final List<String> tags;
   final ValueChanged<List<String>> updateTags;
+  final VoidCallback validate;
 
-  const TagEditor({
-    Key? key,
-    required this.tags,
-    required this.updateTags,
-  }) : super(key: key);
+  const TagEditor(
+      {Key? key,
+      required this.tags,
+      required this.updateTags,
+      required this.validate})
+      : super(key: key);
 
   @override
   State<TagEditor> createState() => _TagEditorState();
@@ -39,18 +41,40 @@ class _TagEditorState extends State<TagEditor> {
                 .toList(),
           ),
         ),
-        TextField(
-          controller: tagController,
-          minLines: 1,
-          decoration: const InputDecoration(
-              border: UnderlineInputBorder(), hintText: 'New Tag'),
-          onChanged: (newValue) {
-            if (newValue.endsWith(",") && newValue.length > 1) {
+        Focus(
+          onFocusChange: (hasFocus) {
+            if (!hasFocus && tagController.text.isNotEmpty) {
               widget.updateTags(
-                  widget.tags..add(newValue.substring(0, newValue.length - 1)));
+                  widget.tags..add(tagController.text.replaceAll(',', '')));
               tagController.text = "";
             }
           },
+          child: TextFormField(
+            controller: tagController,
+            minLines: 1,
+            validator: (val) => val == null || val.isEmpty
+                ? null
+                : ','.allMatches(val).length < val.length
+                    ? null
+                    : 'Invalid tag',
+            decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                errorBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Theme.of(context).colorScheme.error)),
+                hintText: 'New Tag'),
+            onChanged: (newValue) {
+              if (newValue.endsWith(",") &&
+                  (newValue.replaceAll(',', '')).isNotEmpty) {
+                widget.updateTags(widget.tags
+                  ..add(newValue
+                      .substring(0, newValue.length - 1)
+                      .replaceAll(',', '')));
+                tagController.text = "";
+              }
+              widget.validate();
+            },
+          ),
         ),
       ],
     );
