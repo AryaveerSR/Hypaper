@@ -2,11 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final bool isSelected;
-  final Function()? onDelete;
-  final Function()? onCancel;
+class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
+  @override
+  Size get preferredSize => const Size.fromHeight(60);
 
   const MyAppBar(
       {Key? key,
@@ -16,26 +14,38 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.onCancel})
       : super(key: key);
 
+  final String title;
+  final bool isSelected;
+  final Function()? onDelete;
+  final Function()? onCancel;
+
+  @override
+  State<MyAppBar> createState() => _MyAppBar();
+}
+
+class _MyAppBar extends State<MyAppBar> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
         preferredSize: const Size.fromHeight(20),
         child: AppBar(
-          leading: isSelected
+          leading: widget.isSelected
               ? IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => onCancel?.call(),
+                  icon: AnimatedIcon(
+                      icon: AnimatedIcons.menu_close,
+                      progress: AnimationController(vsync: this)),
+                  onPressed: () => widget.onCancel?.call(),
                 )
               : null,
-          title: Text(title),
+          title: Text(widget.title),
           actions: [
-            isSelected
+            widget.isSelected
                 ? IconButton(
                     icon: Icon(
                       Icons.delete,
                       color: Theme.of(context).errorColor,
                     ),
-                    onPressed: () => onDelete?.call(),
+                    onPressed: () => widget.onDelete?.call(),
                   )
                 : IconButton(
                     icon: Theme.of(context).brightness == Brightness.dark
@@ -47,7 +57,4 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ));
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(60);
 }

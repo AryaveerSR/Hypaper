@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../helpers/home.dart';
+import '../helpers/note.dart';
 import '../ui/note_card.dart';
 import '../ui/app_bar.dart';
 import '../services/notes.dart';
@@ -9,19 +9,19 @@ import '../ui/drawer.dart';
 import '../ui/sort_dropdown.dart';
 import '../ui/delete.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class NoteScreen extends StatefulWidget {
+  const NoteScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreen();
+  State<NoteScreen> createState() => _NoteScreen();
 }
 
-class _HomeScreen extends State<HomeScreen> {
+class _NoteScreen extends State<NoteScreen> {
   List<Note> _notes = [];
   List<int> selectedNotes = [];
   SortType sortValue = SortType.dateCreated;
 
-  final HomeHelper homeHelper = HomeHelper(GetIt.I.get());
+  final homeHelper = NoteHelper(GetIt.I.get());
 
   @override
   void initState() {

@@ -1,5 +1,18 @@
 import 'package:flutter/material.dart';
 
+class DrawerItem {
+  String title;
+  String route;
+  IconData icon;
+  DrawerItem(this.title, this.icon, this.route);
+}
+
+final List<DrawerItem> DrawerItems = [
+  DrawerItem("Home", Icons.home_rounded, "/"),
+  DrawerItem("Notes", Icons.description_rounded, "/"),
+  DrawerItem("To-Do", Icons.checklist_rtl_rounded, "/"),
+];
+
 class AppDrawer extends StatelessWidget {
   const AppDrawer({Key? key}) : super(key: key);
 
@@ -16,10 +29,10 @@ class AppDrawer extends StatelessWidget {
                 style: TextStyle(
                     color: Theme.of(context).colorScheme.onPrimary,
                     fontSize: 24))),
-        ListTile(
-            title: const Text('Item 1'), onTap: () => Navigator.pop(context)),
-        ListTile(
-            title: const Text('Item 2'), onTap: () => Navigator.pop(context)),
+        ...DrawerItems.map((DrawerItem item) => ListTile(
+            leading: Icon(item.icon),
+            title: Text(item.title),
+            onTap: () => Navigator.pushNamed(context, item.route)))
       ],
     ));
   }

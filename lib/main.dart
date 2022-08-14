@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-import 'screens/home.dart';
+import 'screens/notes.dart';
 import 'screens/splash.dart';
 import 'services/init.dart';
 import 'services/theme.dart';
@@ -34,11 +34,14 @@ class _App extends State<App> {
                       title: 'Hypaper',
                       debugShowCheckedModeBanner: false,
                       theme: ThemeProvider.themeOf(themeContext).data,
+                      routes: {
+                        '/notes': (context) => NoteScreen(),
+                      },
                       home: FutureBuilder(
                           future: _initFuture,
                           builder: (context, snapshot) =>
                               snapshot.connectionState == ConnectionState.done
-                                  ? const HomeScreen()
+                                  ? const NoteScreen()
                                   : const SplashScreen()),
                     ))));
   }

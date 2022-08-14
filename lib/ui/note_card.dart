@@ -26,18 +26,19 @@ class NoteCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap?.call(),
       onLongPress: () => onSelect?.call(),
-      child: Card(
-        margin: EdgeInsets.only(bottom: clearance),
-        shadowColor: Colors.transparent,
-        shape: RoundedRectangleBorder(
+      child: AnimatedContainer(
+        decoration: BoxDecoration(
+            color: isSelected
+                ? Theme.of(context).colorScheme.inversePrimary
+                : Theme.of(context).colorScheme.secondaryContainer,
             borderRadius: BorderRadius.circular(10),
-            side: BorderSide(
+            border: Border.all(
                 color: isSelected
                     ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.outline)),
-        color: isSelected
-            ? Theme.of(context).colorScheme.secondaryContainer
-            : null,
+                    : Theme.of(context).colorScheme.outline,
+                width: 2)),
+        duration: const Duration(milliseconds: 200),
+        margin: EdgeInsets.only(bottom: clearance),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

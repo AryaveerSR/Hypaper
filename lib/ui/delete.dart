@@ -23,7 +23,7 @@ class DeleteDialog extends StatelessWidget {
             onPressed: () => Navigator.pop(context)),
         TextButton(
           child: Text('Delete',
-              style: TextStyle(color: Theme.of(context).errorColor)),
+              style: TextStyle(color: Theme.of(context).colorScheme.error)),
           onPressed: () {
             onDelete();
             Navigator.pop(context);

@@ -6,9 +6,9 @@ import '../services/notes.dart';
 import '../ui/notify.dart';
 import '../ui/sort_dropdown.dart';
 
-class HomeHelper {
+class NoteHelper {
   final NotesRepository notesRepository;
-  HomeHelper(this.notesRepository);
+  NoteHelper(this.notesRepository);
 
   Future<List<Note>> getNotes(SortType type) async {
     final notes = await notesRepository.getAllNotes();

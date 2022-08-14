@@ -20,9 +20,7 @@ class SortDropdown extends StatelessWidget {
         ),
         DropdownButton(
           underline: Container(
-            height: 1,
-            color: Theme.of(context).colorScheme.outline,
-          ),
+              height: 1, color: Theme.of(context).colorScheme.outline),
           style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           onChanged: (_) {},
           value: value == SortType.dateCreated ? "Date Created" : "Date Edited",
