@@ -1,16 +1,18 @@
 ![Logo](./assets/logo.png)
 
-# Hypaper [WIP]
+## Hypaper
 
-Your Digital Notebook.
+A Simple Note Taking App. Made using Flutter and a lot of free time.
 
-## Download
+### Download
 
 [Android Universal](./assets/app-universal.apk)
+
 [Android Arm64](./assets/app-arm.apk)
+
 [Android x86-64](./assets/app-86.apk)
 
-## Screenshots
+### Screenshots
 ![Screenshot_1660048281](https://user-images.githubusercontent.com/51504825/183649816-726592ab-535d-4bd3-8384-3d58cdd34c3d.png)
 ![Screenshot_1660048284](https://user-images.githubusercontent.com/51504825/183649823-6dea4e6d-028b-488c-82ce-c9efa1a2ab01.png)
 ![Screenshot_1660048317](https://user-images.githubusercontent.com/51504825/183649826-e61897fb-2c2a-4077-bc2a-aa883ab97ea0.png)
